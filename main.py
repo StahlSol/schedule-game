@@ -4,10 +4,8 @@ from cheff.actions import apply_hangover, call_in_to_work, end_of_day_response
 from utils.rng_helpers import roll_chance
 from responses.scenarios import get_event_response
 
-# Shift definitions
 SHIFT_TYPES = ["morning", "afternoon", "evening", "off"]
 
-# Probabilities for work days
 SHIFT_PROBS = {
     "12pm-8pm": 0.65,
     "10am-6pm": 0.25,
@@ -61,6 +59,15 @@ def start_of_day(cheff: CheffState, day_index: int):
 
     # Reset first suggestion flag for the day
     cheff.daily_flags["event_suggested"] = False
+    cheff.daily_flags["event_decided"] = False
+
+    # Reset event flags if first day
+    if not hasattr(cheff, "event_flags"):
+        cheff.event_flags = {
+            "rock_climbing": None,
+            "drinking": None,
+            "streaming": None
+        }
 
     print(f"Day schedule: {day}")
     print(f"Daily flags: {cheff.daily_flags}")
@@ -77,10 +84,8 @@ def main():
     day_index = 0
     start_of_day(cheff, day_index)
 
-    # Narrative intro
     print("\nMan, I really want to hang out with my friend Cheff. I should see if he's free next week.\n")
 
-    # Hourly loop
     current_hour = 9
     end_hour = 23
     pending_message = None
@@ -90,7 +95,6 @@ def main():
         print(f"Cheff mood: {cheff.mood}, memory: {cheff.memory}")
         print(f"Daily flags: {cheff.daily_flags}")
 
-        # Check pending message
         if pending_message:
             pending_message['age'] += 1
             if not cheff.daily_flags.get("hungover") or cheff.daily_flags.get("day_off") \
@@ -106,7 +110,6 @@ def main():
                     print(f"Cheff responds: {response_text}")
                     pending_message = None
 
-        # Show player options
         print("\nChoose an action:")
         print("1. Suggest Event")
         print("2. Ask Availability")
@@ -121,7 +124,6 @@ def main():
             print("Invalid input. Choose a number 1-6.")
             continue
 
-        # Process actions
         if action == 1:
             print("\nWhich event to suggest?")
             print("1. Rock Climbing")
@@ -132,22 +134,31 @@ def main():
             event = events_map.get(event_choice)
 
             if event:
-                # First suggestion of the day is always declined
+                # First suggestion
                 if not cheff.daily_flags.get("event_suggested"):
                     accepted = False
                     cheff.daily_flags["event_suggested"] = True
-                    print("First suggestion of the day is automatically declined.")
-                else:
-                    # Determine acceptance probability for subsequent suggestions
-                    accept_chance = 50
-                    if cheff.mood > 80:
-                        accept_chance += 20
-                    if cheff.daily_flags.get("hungover"):
-                        accept_chance -= 30
-                    if cheff.daily_flags.get("called_in"):
-                        accept_chance -= 20
+                    cheff.event_flags[event] = 0
 
-                    accepted = roll_chance(accept_chance)
+                    # Determine remaining flags
+                    remaining_events = [e for e in cheff.event_flags if cheff.event_flags[e] is None]
+                    if len(remaining_events) == 2:
+                        if roll_chance(50):
+                            cheff.event_flags[remaining_events[0]] = 1
+                            cheff.event_flags[remaining_events[1]] = 0
+                        else:
+                            cheff.event_flags[remaining_events[0]] = 0
+                            cheff.event_flags[remaining_events[1]] = 0
+
+                    print("First suggestion of the day is automatically declined.")
+
+                else:
+                    # Subsequent suggestions
+                    if cheff.event_flags[event] == 1:
+                        accepted = True
+                        cheff.daily_flags["event_decided"] = True
+                    else:
+                        accepted = False
 
                 pending_message = {'event': event, 'accepted': accepted, 'age': 0}
                 cheff.mood -= 5
@@ -175,7 +186,6 @@ def main():
 
         current_hour += 1
 
-    # End-of-day debug
     print("\n" + end_of_day_response(cheff))
     print(f"End-of-day flags: {cheff.daily_flags}\n")
 
