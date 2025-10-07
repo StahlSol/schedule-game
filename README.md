@@ -165,6 +165,18 @@ Depending on the RNG roll, Cleff’s work schedule and communication patterns di
 ### ⚖️ 8. Event Day Resolution
 On the scheduled event day, the game simulates Cleff’s day and runs sequential checks to determine attendance:
 
+### 🧩 Preliminary Checks
+
+Before the event simulation begins, two initial checks are performed to confirm that an event can actually occur.
+
+1. 🗓️ **Event Confirmed** — Has the player and Cleff agreed on a specific event type?  
+   - If **no event** has been set, the simulation ends immediately with no outcome.
+
+2. ⏰ **Time Agreed Upon** — Has a specific time been confirmed for the event?  
+   - If **no time** was set, Cleff may respond ambiguously (“I’ll see what I can do”),  
+     but the event will not proceed to simulation.
+
+### 🔍 Attendance Checks
 1. ✅ **Original Schedule** — Is he working that day?  
 2. 📞 **Call-In Check** — Was he unexpectedly called into work?  
 3. 😒 **Mood Check** — `(100 - mood)%` chance to skip.  
