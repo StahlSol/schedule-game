@@ -115,7 +115,8 @@ The player's objective is to get Cleff to agree to attend an event on a day he i
 
 - Each hour, the player can select an action:
   
-* Suggest Event (3 options) -> Ask about X day -> Double Check availability
+* Suggest Event (3 options)
+* Ask about X day -> Double Check availability
 * Set date of event -> Reschedule
 * Remind him of the event
 * Poke (refresh the freshness of the current message waiting)
