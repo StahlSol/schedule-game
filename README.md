@@ -8,8 +8,8 @@ The player's objective is to get Cleff to agree to attend an event on a day he i
 ---
 
 ## Core gameplay loop
-1. Player selects the event window (6–9 days).  
-2. Player may send **10 messages total** across those days.  
+1. Player selects the event window (8-11 days).  
+2. Player may send as many messages as they want across those days.  
 3. Clayton replies with varying accuracy, tone, and timing.  
 4. Player picks which day will be the event.  
 5. The game resolves on the **Day of Reckoning** (success or one of many failure reasons).
@@ -117,16 +117,42 @@ Depending on the RNG roll, Cleff’s work schedule and communication patterns di
 
 ---
 
-###  3. Communication Rules
-- Asking about a date **more than 4 days ahead** triggers:  
-  > “I don’t have my schedule for that day yet.”
-- **Response probability** (for unanswered messages):  
-  \[
-  90\% - (8\% \times \text{hours since message})
-  \]
-  - Example: After 5 hours, there’s a 50% response chance.
-- Cleff is **guaranteed to respond once before bed** each day.
-- If multiple messages are sent close together, message freshness may override older ones.
+###  6. Communication Rules
+
+Cleff’s communication follows semi-predictable patterns based on **time of day**, **message freshness**, and **mood**.  
+The player must balance timing and tone to avoid overwhelming or frustrating him.
+
+
+####  Message Freshness
+Each hour that passes after sending a message reduces the chance of Cleff responding.  
+The probability of a reply in any given free hour is calculated as: Response Chance = (Base Formula) + (Mood - 50) / 3
+Base Formula = (90 - 8 × [hours since message])%
+
+> **Example:**  
+> If 3 hours have passed and Cleff’s mood is 65 →  
+> Response Chance = (90 - 8×3) + (65 - 50)/3 = **66%** response chance.
+
+- Messages become **stale** after 8 hours, effectively dropping to 0% chance of a reply that day.  
+- Sending too many messages too quickly can trigger **Overload**.
+
+
+####  Overload Condition
+If the player sends **3 or more messages** without receiving a response:
+- Cleff becomes **annoyed**, setting the `annoyed` flag for the rest of the day.  
+- His **mood decreases by 10 permanently**.  
+- He will **ignore all further messages** that day, except for his **guaranteed nightly response**.  
+- The `annoyed` flag automatically **resets the next morning**.
+
+---
+
+####  Availability Rules
+- Asking about a day more than **4 days in advance** results in:  
+  > “I don’t have my schedule for that day yet.”  
+- Cleff’s **work schedule** and **daily conditions** are independent; learning one day’s schedule doesn’t reveal others.
+
+
+####  Guaranteed Responses
+- Cleff will **always** send one message before bed, even if ignoring earlier ones.  
 
 ---
 
@@ -138,10 +164,26 @@ Depending on the RNG roll, Cleff’s work schedule and communication patterns di
 - Condition automatically clears at the **start of the next day**.
 
 ---
-
 ###  5. Dynamic Schedule Events
-- Beginning **on Day 5**, each remaining day has a **35% chance** to spontaneously generate a **new evening plan**, if Cleff isn’t working late.
-- These spontaneous plans can cause **conflicts** with scheduled events.
+
+- Starting **on Day 5**, each remaining day has a chance to spontaneously generate a **new evening plan**, provided Cleff **isn’t working a late shift**.  
+- These spontaneous plans can **conflict with pre-scheduled events**, potentially causing last-minute cancellations.
+
+####  Chance of a New Plan
+- **Morning Shift (8 AM – 4 PM):** 35% chance of scheduling a new plan.  
+- **Afternoon Shift (10 AM – 6 PM):** 55% chance of scheduling a new plan.  
+- **Evening Shift (12 PM – 8 PM):** Never schedules additional plans (already late).  
+
+####  Possible Plans
+New spontaneous plans may include:
+- Drinking stream  
+- Volleyball tournament  
+- Grocery run  
+- Dinner date with boyfriend  
+- Going to bed early  
+- Playing *Monster Hunter*
+
+>  **Note:** If the “drinking stream” plan occurs, it guarantees a **Hungover Condition** for the following day.
 
 ---
 
@@ -161,8 +203,17 @@ Depending on the RNG roll, Cleff’s work schedule and communication patterns di
 - However, this **does not guarantee attendance** — the day of the event will run final checks to see if he actually shows.
 
 ---
+### 8. Mood Mechanic
+- Cheff's mood starts at 100 points
+- Each message sent lowers his mood by (n*0.65) where n is the amount of total messages sent
+- Mood can be affected by hangover condition, lowering his mood by 10 for a day
+- Having a morning shift will also lower his mood by 10 for that day
+- Mood will effect the chance of responding with the following calculation: (Base chance)% + (Mood-50)/3%
+- If Cheff is in a good mood, he will be more likely to respond
 
-###  8. Event Day Resolution
+---
+
+###  9. Event Day Resolution
 On the scheduled event day, the game simulates Cleff’s day and runs sequential checks to determine attendance:
 
 #### **  Preliminary Checks
@@ -186,16 +237,6 @@ Before the event simulation begins, two initial checks are performed to confirm 
 If any check fails:
 - The event is canceled.
 - Player receives an apology/excuse message referencing the last relevant flag (e.g. “Sorry, got called in,” “Something came up,” “Totally forgot!”).
-
----
-
-###  9. Mood & Memory Systems
-- **Mood** fluctuates daily due to:
-  - Message frequency or tone.
-  - Hungover status.
-  - Failed scheduling attempts.
-- **Memory freshness** decays the longer ago the plan was made.  
-  Recent plans = higher recall; old ones = higher “forgot” chance.
 
 ---
 
