@@ -4,9 +4,11 @@ from utils.rng_helpers import roll_chance
 def handle_suggest_event(cheff):
     """
     Handles the player suggesting an event to Cheff.
-    - First suggestion is always declined
-    - Remaining events are determined by a 50/50 roll
-    - Sets event flags and daily flags
+    Rules:
+    - First suggestion of the day is automatically declined
+    - Remaining events: one accepted by 50/50 chance, the other declined
+    - Event flags are permanent for the session
+    - Sets daily_flags['event_suggested'] and daily_flags['event_decided']
     Returns a pending message dict with 'event', 'accepted', and 'age'
     """
     print("\nWhich event to suggest?")
@@ -24,13 +26,17 @@ def handle_suggest_event(cheff):
         else:
             print("Invalid choice. Pick 1, 2, or 3.")
 
+    # Initialize event_flags if not already
+    if not hasattr(cheff, "event_flags"):
+        cheff.event_flags = {e: None for e in events_map.values()}
+
     # First suggestion logic
     if not cheff.daily_flags.get("event_suggested"):
         accepted = False
         cheff.daily_flags["event_suggested"] = True
         cheff.event_flags[event] = 0  # always decline first suggestion
 
-        # Determine remaining event flags
+        # Determine remaining events permanently
         remaining_events = [e for e in cheff.event_flags if cheff.event_flags[e] is None]
         if len(remaining_events) == 2:
             if roll_chance(50):
@@ -38,13 +44,13 @@ def handle_suggest_event(cheff):
                 cheff.event_flags[remaining_events[1]] = 0
             else:
                 cheff.event_flags[remaining_events[0]] = 0
-                cheff.event_flags[remaining_events[1]] = 0
+                cheff.event_flags[remaining_events[1]] = 1
 
-        print("First suggestion of the day is automatically declined.")
 
     else:
         # Subsequent suggestions
-        if cheff.event_flags[event] == 1:
+        flag_value = cheff.event_flags.get(event)
+        if flag_value == 1:
             accepted = True
             cheff.daily_flags["event_decided"] = True
         else:
@@ -53,10 +59,7 @@ def handle_suggest_event(cheff):
     # Sending message reduces mood slightly
     cheff.mood -= 5
     print(f"You suggested {event.replace('_', ' ').title()} to Cheff.")
-    if accepted:
-        print("Cheff seems like he might accept this...")
-    else:
-        print("Cheff seems unsure or likely to decline.")
+
 
     # Return pending message object
     return {'event': event, 'accepted': accepted, 'age': 0}

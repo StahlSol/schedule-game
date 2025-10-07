@@ -1,7 +1,9 @@
-# game/day.py
 from cheff.actions import apply_hangover, call_in_to_work, end_of_day_response
+from cheff.behavior import calculate_response_chance, check_overload, apply_night_responses
 from utils.rng_helpers import roll_chance
 from responses.scenarios import get_event_response
+from game.actions import handle_suggest_event
+
 
 def start_of_day(cheff, day_index: int):
     """
@@ -11,15 +13,20 @@ def start_of_day(cheff, day_index: int):
     - Apply hungover condition if necessary
     """
     cheff.reset_daily_flags()
+    cheff.current_day = day_index
+    cheff.current_hour = 9  # start of the day
+
     print(f"\n--- Day {day_index + 1} Start ---")
     print(f"Initial mood: {cheff.mood}, memory: {cheff.memory}")
 
     day = cheff.schedule[day_index]
 
+    # Call-in logic for off day
     if day["shift"] == "off" and roll_chance(25):
         call_in_to_work(cheff, day_index, "10am-6pm")
         print(f"Cheff got called into work today! New shift: {cheff.schedule[day_index]['shift']}")
 
+    # Hungover check
     if roll_chance(10):
         apply_hangover(cheff)
         print("Cheff is hungover today!")
@@ -57,7 +64,6 @@ def run_daily_cycle(cheff, day_index: int):
     - End-of-day wrap-up
     """
     start_of_day(cheff, day_index)
-    print("\nMan, I really want to hang out with my friend Cheff. I should see if he's free next week.\n")
 
     current_hour = 9
     end_hour = 23
@@ -65,22 +71,8 @@ def run_daily_cycle(cheff, day_index: int):
 
     while current_hour <= end_hour:
         print(f"\n--- Hour {current_hour}:00 ---")
-        print(f"Cheff mood: {cheff.mood}, memory: {cheff.memory}")
-        print(f"Daily flags: {cheff.daily_flags}")
-
-        if pending_message:
-            pending_message['age'] += 1
-            if not cheff.daily_flags.get("hungover") or cheff.daily_flags.get("day_off") \
-               or cheff.daily_flags.get("morning_shift") or cheff.daily_flags.get("afternoon_shift") \
-               or cheff.daily_flags.get("evening_shift"):
-                if roll_chance(90):
-                    response_text = get_event_response(
-                        pending_message['event'],
-                        pending_message['accepted'],
-                        cheff
-                    )
-                    print(f"Cheff responds: {response_text}")
-                    pending_message = None
+        #print(f"Cheff mood: {cheff.mood}, memory: {cheff.memory}")
+        #print(f"Daily flags: {cheff.daily_flags}")
 
         # Show player options
         print("\nChoose an action:")
@@ -97,11 +89,9 @@ def run_daily_cycle(cheff, day_index: int):
             print("Invalid input. Choose a number 1-6.")
             continue
 
-        # Here you can either implement each action or delegate to a helper
         if action == 1:
-            # Suggest event logic (with first-suggestion decline & event flags)
-            from game.actions import handle_suggest_event  # optional modular approach
             pending_message = handle_suggest_event(cheff)
+            pending_message['hour'] = current_hour  # Pass hour for response checks
         elif action == 2:
             print("Ask availability not implemented yet.")
         elif action == 3:
@@ -114,8 +104,31 @@ def run_daily_cycle(cheff, day_index: int):
             print("Waiting 1 hour...")
         else:
             print("Invalid choice.")
+            continue
+
+        # Process pending message
+        if pending_message:
+            pending_message['age'] += 1
+            if calculate_response_chance(pending_message, cheff):
+                response_text = get_event_response(
+                    pending_message['event'],
+                    pending_message['accepted'],
+                    cheff
+                )
+                print(f"Cheff responds: {response_text}")
+                pending_message = None
+            else:
+                print("He still hasn't responded.")
+
+        # Apply overload checks
+        check_overload(cheff, [pending_message] if pending_message else [])
 
         current_hour += 1
 
+    # Apply night responses and end-of-day wrap-up
+    responses = apply_night_responses(cheff, [pending_message] if pending_message else [])
+    for resp in responses:
+        print(resp)
+
     print("\n" + end_of_day_response(cheff))
-    print(f"End-of-day flags: {cheff.daily_flags}\n")
+    # print(f"End-of-day flags: {cheff.daily_flags}\n")
