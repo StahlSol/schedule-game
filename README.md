@@ -36,17 +36,17 @@ The player's objective is to get Cleff to agree to attend an event on a day he i
 
 ## Game Week:
 
-[1] Thursday  
-[2] Friday
-[3] Saturday
-[4] Sunday
-[5] Monday
-[6] Tuesday     [Random new events added to schedule]
-[7] Wednesday
-[8] Thursday    [Possible event day]
-[9] Friday      [Possible event day]
-[10] Saturday   [Possible event day]
-[11] Sunday     [Possible event day]
+- [1] Thursday  
+- [2] Friday
+- [3] Saturday
+- [4] Sunday
+- [5] Monday
+- [6] Tuesday     [Random new events added to schedule]
+- [7] Wednesday
+- [8] Thursday    [Possible event day]
+- [9] Friday      [Possible event day]
+- [10] Saturday   [Possible event day]
+- [11] Sunday     [Possible event day]
 
 ---
 
