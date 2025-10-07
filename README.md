@@ -1,4 +1,4 @@
-# Cheff Cleff: Party Inviter Simulator
+# Cheff Cleff: Invitation Simulator
 *“Get Cheff Cleff to commit to one social event. If you can.”*
 
 ## Overview
