@@ -91,37 +91,112 @@ The player's objective is to get Cleff to agree to attend an event on a day he i
 
 ---
 
-## Cheff Cleff Mechanics
+## 🧠 Cheff Cleff Behavior Systems
 
-- At the start of the session, a full schedule is randomly generated for Cleff
-- Each day has an 85% chance of becoming a work day at the start of the week
-- At the start of a day of, there is a 5% chance at the start of the day for Cleff to get called into work
-- In the case of a call-in, the kind of work day will follow the normal work day odds
-- Depending on the kind of work day, his actions that day will change.
-- 65% to work 12pm-8pm - He won't respond in the evening (final message of the day is still guarenteed), but will respond in the morning
-- 25% to work 10am-6pm - He can respond at night or morning but has a 15% chance of double booking on these days
-- 10%  to work 8am - 4pm - He will only respond at night. 
-- Since its all RNG, there is nothing to interpret about the other work days of the week based on a single known day.
-- Asking about the availability of a day more than 4 days in advance will result in an unclear "I don't have my schedule for that day yet" response
-- Each hour Cleff is free, he has a (90 - 8*[hours since message])%  chance to respond to an unanswered message. (message freshness)
-- Each day, Cleff has a 10% of being hung over, making it impossible to receive any responses from him until evening.
-- At the end of the day, he's guarenteed to respond before bed.
-- On day 5, each remaining day has a 35% chance spontaniously have a new plan in the evening (if it's not a late work day)
-- There will be 3 options for events to do with Cheff (streamer event, rock climbing, going drinking)
-- Each session, Cleff will be in the mood for exactly 1 of these events.
-- The event he is in the mood for will always be a 50/50 chance between the 2 options that were not initially suggested
-- This means the first suggestion will always be declined. 
+Below is a breakdown of all core logic and RNG systems that govern Cheff’s behavior throughout the simulation.
+
+---
+
+### 🗓️ 1. Schedule Generation
+- At the start of a session, a full weekly schedule is **randomly generated** for Cleff.
+- Each day has an **85% base chance** to be a **work day**.
+- Days marked as **off** have a **25% chance** at the start of the day to become a **call-in work day**.
+- In the event of a call-in, the **type of work shift** is determined using the same probabilities as a normal work day.
+- Since each day’s data is generated independently, **you cannot infer** future work days from known ones.
+
+---
+
+### 🕐 2. Work Day Types
+Depending on the RNG roll, Cleff’s work schedule and communication patterns differ:
+
+| Work Type | Probability | Work Hours | Response Behavior | Notes |
+|------------|--------------|-------------|-------------------|-------|
+| **Late Shift** | 65% | 12 PM – 8 PM | Responds in the morning only; ignores evening messages (final message guaranteed) | Common default shift |
+| **Mid Shift** | 25% | 10 AM – 6 PM | May respond morning or night; 15% chance of **double-booking** | Most flexible |
+| **Early Shift** | 10% | 8 AM – 4 PM | Only responds at night | Rarest schedule |
+
+---
+
+### 💬 3. Communication Rules
+- Asking about a date **more than 4 days ahead** triggers:  
+  > “I don’t have my schedule for that day yet.”
+- **Response probability** (for unanswered messages):  
+  \[
+  90\% - (8\% \times \text{hours since message})
+  \]
+  - Example: After 5 hours, there’s a 50% response chance.
+- Cleff is **guaranteed to respond once before bed** each day.
+- If multiple messages are sent close together, message freshness may override older ones.
+
+---
+
+### 🍻 4. Hungover Condition
+- **10% daily chance** for Cleff to start the day hungover.  
+- While hungover:
+  - No responses are possible until evening.
+  - Mood temporarily set to **–10** for that day.
+- Condition automatically clears at the **start of the next day**.
+
+---
+
+### 📆 5. Dynamic Schedule Events
+- Beginning **on Day 5**, each remaining day has a **35% chance** to spontaneously generate a **new evening plan**, if Cleff isn’t working late.
+- These spontaneous plans can cause **conflicts** with scheduled events.
+
+---
+
+### 🎟️ 6. Event Preferences
+- There are **three event types**:
+  1. Streamer Event  
+  2. Rock Climbing  
+  3. Going Drinking  
+- At the start of each session, Cleff is in the mood for **exactly one** of these.  
+- The event he’s in the mood for is **randomly chosen** between the **two events not suggested first** (the first suggestion is **always declined**).
+
+---
+
+### 🕑 7. Scheduling Behavior
+- Suggesting a **specific time** always results in a **positive response**, regardless of actual availability:  
+  > “That sounds fun, I’ll try to make it!”
+- However, this **does not guarantee attendance** — the day of the event will run final checks to see if he actually shows.
+
+---
+
+### ⚖️ 8. Event Day Resolution
+On the scheduled event day, the game simulates Cleff’s day and runs sequential checks to determine attendance:
+
+1. ✅ **Original Schedule** — Is he working that day?  
+2. 📞 **Call-In Check** — Was he unexpectedly called into work?  
+3. 😒 **Mood Check** — `(100 - mood)%` chance to skip.  
+4. 🧠 **Memory Check** — `(100 - memory freshness)%` chance to forget.  
+5. 🎲 **Random Failure** — Flat 25% chance “something came up.”  
+
+If any check fails:
+- The event is canceled.
+- Player receives an apology/excuse message referencing the last relevant flag (e.g. “Sorry, got called in,” “Something came up,” “Totally forgot!”).
+
+---
+
+### ❤️ 9. Mood & Memory Systems
+- **Mood** fluctuates daily due to:
+  - Message frequency or tone.
+  - Hungover status.
+  - Failed scheduling attempts.
+- **Memory freshness** decays the longer ago the plan was made.  
+  Recent plans = higher recall; old ones = higher “forgot” chance.
+
+---
 
 ## Player Mechanics
 
-- Each hour, the player can select an action:
-  
-* Suggest Event (3 options)
-* Ask about X day -> Double Check availability
-* Set date of event -> Reschedule
-* Remind him of the event
-* Poke (refresh the freshness of the current message waiting)
-* Wait 1 hour (until the end of the day, 11pm)
-* Sleep (at the end of the day)
+Each hour, the player can select one action:
 
+### Core Actions
+- **Suggest Event** – Choose from 3 event options (Streamer, Rock Climb, Drink)
+- **Ask About X Day** – Check Cleff’s availability for a given day
+- **Set / Reschedule Event** – Confirm or adjust the event date
+- **Remind Him** – Boosts event memory freshness
+- **Poke** – Nudges for a reply (resets message freshness slightly)
+- **Wait 1 Hour** – Advances time by 1 hour (until 11pm)
+- **Sleep** – Ends the day
   
