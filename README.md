@@ -31,12 +31,22 @@ The player's objective is to get Cleff to agree to attend an event on a day he i
 | Resource      | Limit       | Notes |
 |---------------|-------------|-------|
 | Messages      | 10 total    | Strategic communication budget. |
-| Days window   | 6–9 days    | Player chooses the length during the session based on their impression of his schedule. |
-| Mood bar      | 0–10        | Depletes with messaging and bad interactions; affects RNG. |
+| Days window   | 8–11 days   | Player chooses the length during the session based on their impression of his schedule. |
+| Mood   (Todo) | 0–10        | Depletes with messaging and bad interactions; affects RNG. |
 
 ## Game Week:
 
-
+[1] Thursday  
+[2] Friday
+[3] Saturday
+[4] Sunday
+[5] Monday
+[6] Tuesday     [Random new events added to schedule]
+[7] Wednesday
+[8] Thursday    [Possible event day]
+[9] Friday      [Possible event day]
+[10] Saturday   [Possible event day]
+[11] Sunday     [Possible event day]
 
 ---
 
@@ -91,6 +101,7 @@ The player's objective is to get Cleff to agree to attend an event on a day he i
 - 25% to work 10am-6pm - He can respond at night or morning but has a 15% chance of double booking on these days
 - 10%  to work 8am - 4pm - He will only respond at night. 
 - Since its all RNG, there is nothing to interpret about the other work days of the week based on a single known day.
+- Asking about the availability of a day more than 4 days in advance will result in an unclear "I don't have my schedule for that day yet" response
 - Each hour Cleff is free, he has a (90 - 8*[hours since message])%  chance to respond to an unanswered message. (message freshness)
 - Each day, Cleff has a 10% of being hung over, making it impossible to receive any responses from him until evening.
 - At the end of the day, he's guarenteed to respond before bed.
