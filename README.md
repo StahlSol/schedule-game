@@ -94,9 +94,10 @@ The player's objective is to get Cleff to agree to attend an event on a day he i
 ## Cheff Cleff Mechanics
 
 - At the start of the session, a full schedule is randomly generated for Cleff
-- Each day has an 85% chance of becoming a work day  
+- Each day has an 85% chance of becoming a work day at the start of the week
+- At the start of a day of, there is a 5% chance at the start of the day for Cleff to get called into work
+- In the case of a call-in, the kind of work day will follow the normal work day odds
 - Depending on the kind of work day, his actions that day will change.
-- Free days he tends to stream
 - 65% to work 12pm-8pm - He won't respond in the evening (final message of the day is still guarenteed), but will respond in the morning
 - 25% to work 10am-6pm - He can respond at night or morning but has a 15% chance of double booking on these days
 - 10%  to work 8am - 4pm - He will only respond at night. 
