@@ -3,7 +3,7 @@
 
 ## Overview
 **Cheff Cleff: Party Inviter Simulator** is a short, dialogue-driven game played entirely through a simulated messaging interface.  
-The player's objective is to get Clayton to agree to attend an event on a day he is actually free — despite vague replies, limited messaging, and random real-life interruptions.
+The player's objective is to get Cleff to agree to attend an event on a day he is actually free — despite vague replies, limited messaging, and random real-life interruptions.
 
 ---
 
@@ -19,7 +19,7 @@ The player's objective is to get Clayton to agree to attend an event on a day he
 ## Messaging system
 - UI simulates a messaging app (timestamps, typing bubbles, read receipts optional).  
 - Player chooses how many messages to send each day (subject to the 10-message cap).  
-- Over-messaging in a single day → Clayton becomes overwhelmed and may ignore messages.  
+- Over-messaging in a single day → Cleff becomes overwhelmed and may ignore messages.  
 - Asking **too far in advance** yields “my schedule isn't released that far out” (wastes a message).  
 - Asking **too late** can cause automatic conflicts (“I already made plans”).  
 - Long/compound messages risk upsetting Clayton and may cause immediate negative outcomes.
