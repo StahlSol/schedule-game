@@ -91,13 +91,13 @@ The player's objective is to get Cleff to agree to attend an event on a day he i
 
 ---
 
-## 🧠 Cheff Cleff Behavior Systems
+##  Cheff Cleff Behavior Systems
 
 Below is a breakdown of all core logic and RNG systems that govern Cheff’s behavior throughout the simulation.
 
 ---
 
-### 🗓️ 1. Schedule Generation
+###  1. Schedule Generation
 - At the start of a session, a full weekly schedule is **randomly generated** for Cleff.
 - Each day has an **85% base chance** to be a **work day**.
 - Days marked as **off** have a **25% chance** at the start of the day to become a **call-in work day**.
@@ -106,7 +106,7 @@ Below is a breakdown of all core logic and RNG systems that govern Cheff’s beh
 
 ---
 
-### 🕐 2. Work Day Types
+###  2. Work Day Types
 Depending on the RNG roll, Cleff’s work schedule and communication patterns differ:
 
 | Work Type | Probability | Work Hours | Response Behavior | Notes |
@@ -117,7 +117,7 @@ Depending on the RNG roll, Cleff’s work schedule and communication patterns di
 
 ---
 
-### 💬 3. Communication Rules
+###  3. Communication Rules
 - Asking about a date **more than 4 days ahead** triggers:  
   > “I don’t have my schedule for that day yet.”
 - **Response probability** (for unanswered messages):  
@@ -130,7 +130,7 @@ Depending on the RNG roll, Cleff’s work schedule and communication patterns di
 
 ---
 
-### 🍻 4. Hungover Condition
+###  4. Hungover Condition
 - **10% daily chance** for Cleff to start the day hungover.  
 - While hungover:
   - No responses are possible until evening.
@@ -139,49 +139,49 @@ Depending on the RNG roll, Cleff’s work schedule and communication patterns di
 
 ---
 
-### 📆 5. Dynamic Schedule Events
+###  5. Dynamic Schedule Events
 - Beginning **on Day 5**, each remaining day has a **35% chance** to spontaneously generate a **new evening plan**, if Cleff isn’t working late.
 - These spontaneous plans can cause **conflicts** with scheduled events.
 
 ---
 
-### 🎟️ 6. Event Preferences
+###  6. Event Preferences
 - There are **three event types**:
   1. Streamer Event  
   2. Rock Climbing  
   3. Going Drinking  
-- At the start of each session, Cleff is in the mood for **exactly one** of these.  
+- For each session, Cleff is in the mood for **exactly one** of these.  
 - The event he’s in the mood for is **randomly chosen** between the **two events not suggested first** (the first suggestion is **always declined**).
 
 ---
 
-### 🕑 7. Scheduling Behavior
+###  7. Scheduling Behavior
 - Suggesting a **specific time** always results in a **positive response**, regardless of actual availability:  
   > “That sounds fun, I’ll try to make it!”
 - However, this **does not guarantee attendance** — the day of the event will run final checks to see if he actually shows.
 
 ---
 
-### ⚖️ 8. Event Day Resolution
+###  8. Event Day Resolution
 On the scheduled event day, the game simulates Cleff’s day and runs sequential checks to determine attendance:
 
-### 🧩 Preliminary Checks
-
+#### **  Preliminary Checks
+**
 Before the event simulation begins, two initial checks are performed to confirm that an event can actually occur.
 
-1. 🗓️ **Event Confirmed** — Has the player and Cleff agreed on a specific event type?  
-   - If **no event** has been set, the simulation ends immediately with no outcome.
+1.  **Event Confirmed** — Has the player and Cleff agreed on a specific event type?  
+   - If **no event** has bee# set, the simulation ends immediately with no outcome.
 
-2. ⏰ **Time Agreed Upon** — Has a specific time been confirmed for the event?  
+2.  **Time Agreed Upon** — Has a specific time been confirmed for the event?  
    - If **no time** was set, Cleff may respond ambiguously (“I’ll see what I can do”),  
      but the event will not proceed to simulation.
 
-### 🔍 Attendance Checks
-1. ✅ **Original Schedule** — Is he working that day?  
-2. 📞 **Call-In Check** — Was he unexpectedly called into work?  
-3. 😒 **Mood Check** — `(100 - mood)%` chance to skip.  
-4. 🧠 **Memory Check** — `(100 - memory freshness)%` chance to forget.  
-5. 🎲 **Random Failure** — Flat 25% chance “something came up.”  
+####  Attendance Checks
+1.  **Original Schedule** — Is he working that day?  
+2.  **Call-In Check** — Was he unexpectedly called into work?  
+3.  **Mood Check** — `(100 - mood)%` chance to skip.  
+4.  **Memory Check** — `(100 - memory freshness)%` chance to forget.  
+5.  **Random Failure** — Flat 25% chance “something came up.”  
 
 If any check fails:
 - The event is canceled.
@@ -189,7 +189,7 @@ If any check fails:
 
 ---
 
-### ❤️ 9. Mood & Memory Systems
+###  9. Mood & Memory Systems
 - **Mood** fluctuates daily due to:
   - Message frequency or tone.
   - Hungover status.
